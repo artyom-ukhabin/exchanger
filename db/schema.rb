@@ -21,8 +21,8 @@ ActiveRecord::Schema.define(version: 2021_12_08_121837) do
     t.string "from", null: false
     t.string "to", null: false
     t.float "exchange_rate", null: false
-    t.bigint "original", null: false
-    t.bigint "exchanged", null: false
+    t.bigint "original_sum", null: false
+    t.bigint "exchanged_sum", null: false
     t.bigint "network_fee", null: false
     t.bigint "exchanged_fee", null: false
     t.string "tx_id", null: false
