@@ -1,8 +1,16 @@
 # frozen_string_literal: true
 
 class TransactionsController < ApplicationController
+  # базовая авторизация only: %[index], креды в конфиге, не в репе
+
+  def index
+    # jbuilder view
+    # пагинация на обе таблицы - отдельные экшны или в этом?
+  end
+
   def show
     @transaction = Transaction.find(params[:id])
+    # jbuilder view
   end
 
   def new
@@ -14,18 +22,32 @@ class TransactionsController < ApplicationController
   end
 
   def create
-    transaction = Transaction.create(transaction_params) # + default params
-    # создать объект формы с валидациями
-    redirect_to action: :show, id: transaction.id
+    # транзакция на три шага: запрос, валидация, сохранение в базу
+    # отдельные классы сервиса и формы для использования в первых двух операциях
+
+
+    # запрос по http в рамках сохранения формы для получения статуса
+    form = TransactionForm.new(transaction_params)
+
+    if form.valid?
+      transaction = form.create!
+      render json: { showUrl: transaction_path(transaction.id) }
+    else
+      render json: { errors: form.errors.messages }, status: :unprocessable_entity
+    end
   end
 
   private
-    # Only allow a list of trusted parameters through.
-    def transaction_params
-      params.permit(:email, :destination, :exchange_rate, :original,
-        :exchanged, :network_fee, :exchanged_fee)
-      # был require
-      # params.require(:transaction).permit(:email, :destination, :exchange_rate, :original,
-      #   :exchanged, :network_fee, :exchanged_fee)
-    end
+
+  def transaction_params
+    params.require(:transaction).permit(
+      :email,
+      :destination,
+      :exchange_rate,
+      :original,
+      :exchanged,
+      :network_fee,
+      :exchanged_fee
+    )
+  end
 end

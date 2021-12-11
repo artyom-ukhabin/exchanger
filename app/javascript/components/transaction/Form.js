@@ -100,8 +100,8 @@ class Form extends React.Component {
 
     apiFetch(requestOptions)
       .then((data) => {
-        if (data.redirectUrl) {
-          window.location = data.redirectUrl
+        if (data.showUrl) {
+          window.location = data.showUrl
         } else {
           this.setState(data.errors)
         }
@@ -110,6 +110,7 @@ class Form extends React.Component {
       })
   }
 
+  // расставить ошибки - прочитать на реакт бутстрапе
   render () {
     const { inputs } = this.state
     const { createUrl } = this.props
