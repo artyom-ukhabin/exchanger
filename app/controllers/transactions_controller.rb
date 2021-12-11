@@ -22,22 +22,26 @@ class TransactionsController < ApplicationController
   end
 
   def create
-    # транзакция на три шага: запрос, валидация, сохранение в базу
-    # отдельные классы сервиса и формы для использования в первых двух операциях
+    create_transaction.call do |result|
+      result.success do |transaction|
+        render json: { showUrl: transaction_path(transaction.id) }
+      end
 
+      result.failure :validate do |errors|
+        render json: { errors: errors }, status: :unprocessable_entity
+      end
 
-    # запрос по http в рамках сохранения формы для получения статуса
-    form = TransactionForm.new(transaction_params)
-
-    if form.valid?
-      transaction = form.create!
-      render json: { showUrl: transaction_path(transaction.id) }
-    else
-      render json: { errors: form.errors.messages }, status: :unprocessable_entity
+      result.failure do |error| # исключением
+        render json: { errors: error }, status: :internal_server_error
+      end
     end
   end
 
   private
+
+  def create_transaction # контейнер?
+    Transactions::Transaction::Create.new
+  end
 
   def transaction_params
     params.require(:transaction).permit(
