@@ -22,7 +22,7 @@ class TransactionsController < ApplicationController
   end
 
   def create
-    create_transaction.call do |result|
+    create_transaction.call(transaction_params.to_h) do |result|
       result.success do |transaction|
         render json: { showUrl: transaction_path(transaction.id) }
       end
@@ -44,14 +44,16 @@ class TransactionsController < ApplicationController
   end
 
   def transaction_params
+    # нужно добавить передачу exchanged_sum и fee
     params.require(:transaction).permit(
       :email,
       :destination,
       :exchange_rate,
-      :original,
-      :exchanged,
+      :original_sum,
+      :exchanged_sum,
       :network_fee,
-      :exchanged_fee
+      :exchanged_fee,
+      :terms_checked,
     )
   end
 end

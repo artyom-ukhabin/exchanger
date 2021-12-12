@@ -5,6 +5,7 @@ ruby '2.7.5'
 
 gem 'dry-system'
 gem 'dry-transaction'
+gem 'dry-validation'
 gem 'jbuilder', '~> 2.7'
 gem 'pg', '~> 1.1'
 gem 'puma', '~> 5.0'
@@ -17,7 +18,9 @@ gem 'webpacker', '~> 5.0'
 gem 'bootsnap', '>= 1.4.4', require: false
 
 group :development, :test do
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem "pry"
+  gem "pry-rails"
+  gem "pry-byebug"
 end
 
 group :development do

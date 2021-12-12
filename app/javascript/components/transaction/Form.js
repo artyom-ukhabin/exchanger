@@ -12,6 +12,7 @@ import {
   Container,
   Spinner,
 } from "react-bootstrap"
+import _ from "lodash"
 import { apiFetch, roundNumber } from "../Utils"
 
 const apiUrl = "https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USDT"
@@ -31,10 +32,10 @@ class Form extends React.Component {
       termsChecked: false,
     },
     errors: {
-      email: null,
-      originalSum: null,
-      destination: null,
-      termsChecked: null,
+      // email: null,
+      // originalSum: null,
+      // destination: null,
+      // termsChecked: null,
     },
     exchangedSum: 0,
     exchangeFee: 0,
@@ -92,10 +93,11 @@ class Form extends React.Component {
   onSubmit = event => {
     event.preventDefault()
 
+    const snakeizedInputs = _.mapKeys(this.state.inputs, (value, key) => (_.snakeCase(key)))
     const requestOptions = {
       url: this.props.createUrl,
       method: "POST",
-      body: { transaction: this.state.inputs },
+      body: {transaction: snakeizedInputs},
     }
 
     apiFetch(requestOptions)
@@ -103,7 +105,7 @@ class Form extends React.Component {
         if (data.showUrl) {
           window.location = data.showUrl
         } else {
-          this.setState(data.errors)
+          this.setState({ errors: data.errors })
         }
       }).catch(error => {
         console.error("error", error)
@@ -112,8 +114,10 @@ class Form extends React.Component {
 
   // расставить ошибки - прочитать на реакт бутстрапе
   render () {
-    const { inputs } = this.state
+    const { inputs, errors } = this.state
     const { createUrl } = this.props
+
+    console.log(errors)
 
     return (
       <React.Fragment>
@@ -145,7 +149,6 @@ class Form extends React.Component {
 
                 <FormControl
                   className="mb-3"
-                  type="email"
                   name="email"
                   placeholder="Your email"
                   onChange={this.handleChange}

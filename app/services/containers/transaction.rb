@@ -1,14 +1,5 @@
 # frozen_string_literal: true
 
-# module Containers
-#   class Transaction < Dry::System::Container
-#     configure do |config|
-#       config.auto_register = 'services/transaction'
-#       # config.component_dirs.add 'services/transaction'
-#     end
-#   end
-# end
-
 module Containers
   class Transaction
     extend Dry::Container::Mixin
@@ -26,4 +17,3 @@ module Containers
     end
   end
 end
-
