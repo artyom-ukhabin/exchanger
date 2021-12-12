@@ -3,6 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.7.5'
 
+gem 'bitcoin-ruby'
 gem 'dry-system'
 gem 'dry-transaction'
 gem 'dry-validation'

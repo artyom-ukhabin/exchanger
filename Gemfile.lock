@@ -67,6 +67,10 @@ GEM
       babel-source (>= 4.0, < 6)
       execjs (~> 2.0)
     bindex (0.8.1)
+    bitcoin-ruby (0.0.20)
+      eventmachine
+      ffi
+      scrypt
     bootsnap (1.9.3)
       msgpack (~> 1.0)
     builder (3.2.4)
@@ -147,8 +151,12 @@ GEM
       dry-initializer (~> 3.0)
       dry-schema (~> 1.8, >= 1.8.0)
     erubi (1.10.0)
+    eventmachine (1.2.7)
     execjs (2.8.1)
     ffi (1.15.4)
+    ffi-compiler (1.0.1)
+      ffi (>= 1.0.0)
+      rake
     globalid (1.0.0)
       activesupport (>= 5.0)
     i18n (1.8.11)
@@ -242,6 +250,8 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
+    scrypt (3.0.7)
+      ffi-compiler (>= 1.0, < 2.0)
     selenium-webdriver (4.1.0)
       childprocess (>= 0.5, < 5.0)
       rexml (~> 3.2, >= 3.2.5)
@@ -287,6 +297,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bitcoin-ruby
   bootsnap (>= 1.4.4)
   capybara (>= 3.26)
   dry-system
@@ -314,4 +325,4 @@ RUBY VERSION
    ruby 2.7.5p203
 
 BUNDLED WITH
-   2.1.4
+   2.2.33

@@ -2,6 +2,7 @@ require_relative "boot"
 
 require "rails/all"
 require "dry/transaction/operation"
+require "bitcoin"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.

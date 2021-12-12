@@ -14,10 +14,14 @@ class TransactionsController < ApplicationController
   end
 
   def new
+    bitcoin_wallet = BitcoinWallet.new
     # camelize params? В геме был метод
     @params_hash = {
-      networkFee: 0.000006, # в константу
+      networkFee: BitcoinWallet::NETWORK_FEE,
+      exchangeFeePercent: BitcoinWallet::EXCHANGE_FEE_PERCENT,
+      walletBalance: bitcoin_wallet.get_balance,
       createUrl: transactions_path,
+      exchangeRateApiUrl: BitcoinWallet::EXCHANGE_RATE_API_URL,
     }
   end
 
@@ -29,6 +33,12 @@ class TransactionsController < ApplicationController
 
       result.failure :validate do |errors|
         render json: { errors: errors }, status: :unprocessable_entity
+        # render json: { errors: {
+        #   termChecked: "should be checked",
+        #   originalSum: "should be less than 30",
+        #   destination: "a",
+        #   email: "b",
+        # } }, status: :unprocessable_entity
       end
 
       result.failure do |error| # исключением

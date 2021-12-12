@@ -5,7 +5,7 @@ module Operations
     class Save
       include Dry::Transaction::Operation
 
-      def call(input)
+      def call(params)
         Rails.logger.debug("save")
         Success(input)
       end

@@ -13,14 +13,13 @@ import {
   Spinner,
 } from "react-bootstrap"
 import _ from "lodash"
-import { apiFetch, roundNumber } from "../Utils"
-
-const apiUrl = "https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USDT"
-const exchangeFeePercent = 0.03
+import { apiFetch, roundNumber } from "../../Utils"
 
 class Form extends React.Component {
   static propTypes = {
-    networkFee: PropTypes.number,
+    networkFee: PropTypes.string,
+    exchangeFeePercent: PropTypes.number,
+    exchangeRateApiUrl: PropTypes.string,
     createUrl: PropTypes.string,
   }
 
@@ -31,12 +30,7 @@ class Form extends React.Component {
       destination: "",
       termsChecked: false,
     },
-    errors: {
-      // email: null,
-      // originalSum: null,
-      // destination: null,
-      // termsChecked: null,
-    },
+    errors: {},
     exchangedSum: 0,
     exchangeFee: 0,
     rate: null,
@@ -70,6 +64,7 @@ class Form extends React.Component {
   // Может скачать либу
   exchangeFee = () => {
     const { inputs, rate } = this.state
+    const { exchangeFeePercent } = this.props
     return((inputs.originalSum / rate) * exchangeFeePercent)
   }
 
@@ -85,13 +80,17 @@ class Form extends React.Component {
   }
 
   fetchActualRate = () => {
-    fetch(apiUrl)
+    const { exchangeRateApiUrl } = this.props
+
+    fetch(exchangeRateApiUrl)
       .then(response => response.json())
       .then(data => this.setState({ rate: data.USDT }));
   }
 
   onSubmit = event => {
     event.preventDefault()
+
+    this.setState({errors: {}})
 
     const snakeizedInputs = _.mapKeys(this.state.inputs, (value, key) => (_.snakeCase(key)))
     const requestOptions = {
@@ -112,18 +111,15 @@ class Form extends React.Component {
       })
   }
 
-  // расставить ошибки - прочитать на реакт бутстрапе
   render () {
     const { inputs, errors } = this.state
-    const { createUrl } = this.props
 
     console.log(errors)
 
     return (
       <React.Fragment>
-        <Card body className="text-center mb-3"> Exchange your USDT </Card>
         <Container className="border mb-3">
-          <Row>
+          <Row className="mt-3 mb-3 ">
             <Col>
               <ReactForm onSubmit={this.onSubmit}>
                 <InputGroup className="mb-1">
@@ -133,38 +129,61 @@ class Form extends React.Component {
                     placeholder="You pay"
                     onChange={this.handleChange}
                     value={inputs.originalSum}
+                    isInvalid={!!errors.originalSum}
                   />
                   <InputGroup.Text>USDT</InputGroup.Text>
+                  <FormControl.Feedback type="invalid">
+                    {errors.originalSum}
+                  </FormControl.Feedback>
                 </InputGroup>
 
-                <FormControl
-                  name="destination"
-                  placeholder="Destination address"
-                  onChange={this.handleChange}
-                  value={inputs.destination}
-                />
+                <InputGroup>
+                  <FormControl
+                    name="destination"
+                    placeholder="Destination address"
+                    onChange={this.handleChange}
+                    value={inputs.destination}
+                    isInvalid={!!errors.destination}
+                  />
+                  <FormControl.Feedback type="invalid">
+                    {errors.destination}
+                  </FormControl.Feedback>
+                </InputGroup>
+
                 <div className="text-end mb-3">
                   { `You get: ~${this.btcRounded(this.exchangedSum())} BTC`}
                 </div>
 
-                <FormControl
-                  className="mb-3"
-                  name="email"
-                  placeholder="Your email"
-                  onChange={this.handleChange}
-                  value={inputs.email}
-                />
+                <InputGroup>
+                  <FormControl
+                    className="mb-3"
+                    name="email"
+                    placeholder="Your email"
+                    onChange={this.handleChange}
+                    value={inputs.email}
+                    isInvalid={!!errors.email}
+                  />
+                  <FormControl.Feedback type="invalid">
+                    {errors.email}
+                  </FormControl.Feedback>
+                </InputGroup>
 
                 <Row>
                   <Col>
-                    <ReactForm.Check
-                      className="mt-2"
-                      type="checkbox"
-                      name="termsChecked"
-                      label="I agree with the Terms and Conditions"
-                      checked={inputs.termsChecked}
-                      onChange={this.handleChange}
-                    />
+                    <InputGroup>
+                      <ReactForm.Check
+                        className="mt-2"
+                        type="checkbox"
+                        name="termsChecked"
+                        label="I agree with the Terms and Conditions"
+                        checked={inputs.termsChecked}
+                        onChange={this.handleChange}
+                        isInvalid={!!errors.email}
+                      />
+                    </InputGroup>
+                    <FormControl.Feedback type="invalid">
+                      {errors.termsChecked}
+                    </FormControl.Feedback>
                   </Col>
                   <Col>
                     <Button
@@ -195,6 +214,10 @@ class Form extends React.Component {
               </Card>
             </Col>
           </Row>
+
+          { errors.general &&
+            <Card body className="text-danger mb-3">{errors.general}</Card>
+          }
         </Container>
       </React.Fragment>
     );
