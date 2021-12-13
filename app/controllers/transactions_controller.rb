@@ -32,17 +32,11 @@ class TransactionsController < ApplicationController
       end
 
       result.failure :validate do |errors|
-        render json: { errors: errors }, status: :unprocessable_entity
-        # render json: { errors: {
-        #   termChecked: "should be checked",
-        #   originalSum: "should be less than 30",
-        #   destination: "a",
-        #   email: "b",
-        # } }, status: :unprocessable_entity
+        render json: { errors: format_errors(errors) }, status: :unprocessable_entity
       end
 
-      result.failure do |error| # исключением
-        render json: { errors: error }, status: :internal_server_error
+      result.failure do |error| # исключением?
+        render json: { errors: format_errors(errors) }, status: :internal_server_error
       end
     end
   end
@@ -65,5 +59,10 @@ class TransactionsController < ApplicationController
       :exchanged_fee,
       :terms_checked,
     )
+  end
+
+  # в декоратор?
+  def format_errors(errors)
+    errors.stringify_keys.transform_keys{ |key| key.camelize(:lower) }
   end
 end

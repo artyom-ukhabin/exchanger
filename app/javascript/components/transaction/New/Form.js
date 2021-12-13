@@ -88,15 +88,23 @@ class Form extends React.Component {
   }
 
   onSubmit = event => {
-    event.preventDefault()
+    const { inputs, exchangedSum, exchangedFee } = this.state
+    const { createUrl } = this.props
 
+    event.preventDefault()
     this.setState({errors: {}})
 
-    const snakeizedInputs = _.mapKeys(this.state.inputs, (value, key) => (_.snakeCase(key)))
+    const snakeizedInputs = _.mapKeys(inputs, (value, key) => (_.snakeCase(key)))
+    const transactionParams = {
+      ...snakeizedInputs,
+      exchanged_sum: exchangedSum,
+      exchanged_fee: exchangedFee,
+    }
+
     const requestOptions = {
-      url: this.props.createUrl,
+      url: createUrl,
       method: "POST",
-      body: {transaction: snakeizedInputs},
+      body: { transaction: transactionParams },
     }
 
     apiFetch(requestOptions)
@@ -109,6 +117,18 @@ class Form extends React.Component {
       }).catch(error => {
         console.error("error", error)
       })
+  }
+
+  showFieldErrors = errors => {
+    return (
+      errors.map(error => {
+        return(
+          <FormControl.Feedback type="invalid" key={error}>
+            {error}
+          </FormControl.Feedback>
+        )
+      })
+    )
   }
 
   render () {
@@ -132,9 +152,7 @@ class Form extends React.Component {
                     isInvalid={!!errors.originalSum}
                   />
                   <InputGroup.Text>USDT</InputGroup.Text>
-                  <FormControl.Feedback type="invalid">
-                    {errors.originalSum}
-                  </FormControl.Feedback>
+                  {errors.originalSum && this.showFieldErrors(errors.originalSum)}
                 </InputGroup>
 
                 <InputGroup>
@@ -145,27 +163,22 @@ class Form extends React.Component {
                     value={inputs.destination}
                     isInvalid={!!errors.destination}
                   />
-                  <FormControl.Feedback type="invalid">
-                    {errors.destination}
-                  </FormControl.Feedback>
+                  {errors.destination && this.showFieldErrors(errors.destination)}
                 </InputGroup>
 
                 <div className="text-end mb-3">
                   { `You get: ~${this.btcRounded(this.exchangedSum())} BTC`}
                 </div>
 
-                <InputGroup>
+                <InputGroup className="mb-3">
                   <FormControl
-                    className="mb-3"
                     name="email"
                     placeholder="Your email"
                     onChange={this.handleChange}
                     value={inputs.email}
                     isInvalid={!!errors.email}
                   />
-                  <FormControl.Feedback type="invalid">
-                    {errors.email}
-                  </FormControl.Feedback>
+                  {errors.email && this.showFieldErrors(errors.email)}
                 </InputGroup>
 
                 <Row>
@@ -178,12 +191,10 @@ class Form extends React.Component {
                         label="I agree with the Terms and Conditions"
                         checked={inputs.termsChecked}
                         onChange={this.handleChange}
-                        isInvalid={!!errors.email}
+                        isInvalid={!!errors.termsChecked}
                       />
                     </InputGroup>
-                    <FormControl.Feedback type="invalid">
-                      {errors.termsChecked}
-                    </FormControl.Feedback>
+                    {errors.termsChecked && this.showFieldErrors(errors.termsChecked)}
                   </Col>
                   <Col>
                     <Button
@@ -195,7 +206,6 @@ class Form extends React.Component {
                     </Button>
                   </Col>
                 </Row>
-
               </ReactForm>
             </Col>
 

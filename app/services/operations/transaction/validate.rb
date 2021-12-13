@@ -7,7 +7,7 @@ module Operations
 
       def call(params)
         result = contract.call(params)
-        result.errors.any? ? Failure(errors: result.errors) : Success(params)
+        result.errors.any? ? Failure(result.errors.to_h) : Success(params)
       end
 
       private

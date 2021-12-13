@@ -11,11 +11,20 @@ module Contracts
       required(:terms_checked).filled(:bool)
     end
 
+    # Описать в ридми?
+    rule(:destination) do
+      begin
+        Bitcoin::Protocol::Addr.new(destination)
+      rescue => ArgumentError
+        key.failure('incorrect address')
+      end
+    end
+
     rule(:email).validate(:email_format)
 
     rule(:original_sum) do
-      if value > 30
-        key.failure('need to be less then 30 USDT')
+      if value <= 0 || value > 30
+        key.failure('need to be greater than 0 and less then 30 USDT')
       end
     end
 
