@@ -36,4 +36,5 @@ yarn-debug.log*
 .yarn-integrity
 
 config/database.yml
+config/main_config.yml
 private_key

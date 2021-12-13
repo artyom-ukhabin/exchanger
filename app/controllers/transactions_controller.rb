@@ -1,11 +1,16 @@
 # frozen_string_literal: true
 
 class TransactionsController < ApplicationController
-  # базовая авторизация only: %[index], креды в конфиге, не в репе
+  http_basic_authenticate_with name: MainConfig.tx_stats.login,
+    password: MainConfig.tx_stats.password,
+    only: %i[index]
 
   def index
     # jbuilder view
-    # пагинация на обе таблицы - отдельные экшны или в этом?
+    @params_hash = {
+      statsUrl: stats_transactions_path,
+      Url: all_transactions_path,
+    }
   end
 
   def show
@@ -48,6 +53,19 @@ class TransactionsController < ApplicationController
         render json: { errors: format_errors(general: error) }, status: :unprocessable_entity
       end
     end
+  end
+
+  def stats
+    stats = {
+      exchangeFee: BitcoinWallet::BtcFormatter.format(Transaction.exchange_fee_sum),
+      count: Transaction.count,
+      successCount: Transaction.success.count,
+    }
+    render json: stats.to_json
+  end
+
+  def all
+    {}
   end
 
   private

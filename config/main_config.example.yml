@@ -1,0 +1,6 @@
+# create main_config.yml and set your credentials
+
+default:
+  tx_stats:
+    login: your_login
+    password: your_pass
