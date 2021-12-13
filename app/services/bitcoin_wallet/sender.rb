@@ -27,9 +27,7 @@ class BitcoinWallet
         amount: amount,
         fee: fee,
         )
-      Rails.logger.debug(tx.payload.bth)
-      tx
-      # push(tx)
+      push(tx)
     end
 
     private
