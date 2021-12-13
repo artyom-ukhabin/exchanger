@@ -9,7 +9,7 @@ class TransactionsController < ApplicationController
     # jbuilder view
     @params_hash = {
       statsUrl: stats_transactions_path,
-      Url: all_transactions_path,
+      allTransactionsUrl: all_transactions_path,
     }
   end
 
