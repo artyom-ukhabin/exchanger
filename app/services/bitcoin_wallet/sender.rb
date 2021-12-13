@@ -3,6 +3,7 @@
 class BitcoinWallet
   class Sender
     NETWORK_FEE = 600
+    PUSH_URL = "push/transaction"
 
     def initialize
       @stats = Stats.new
@@ -48,9 +49,8 @@ class BitcoinWallet
     end
 
     def push(tx)
-      path = "push/transaction"
       body = { data: CGI.escape(tx.to_payload.bth) }
-      result = @client.post(path, body)
+      result = @client.post(PUSH_URL, body)
       result[:success] ?
         { success: true, idx: result[:response]["data"]["transaction_hash"] } :
         { success: false, status: result[:response].status, message: result[:response].body }

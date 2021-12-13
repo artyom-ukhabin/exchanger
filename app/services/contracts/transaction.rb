@@ -12,7 +12,6 @@ module Contracts
       required(:terms_checked).filled(:bool)
     end
 
-    # Описать в ридми?
     rule(:destination) do
       begin
         Bitcoin::Protocol::Addr.new(value)

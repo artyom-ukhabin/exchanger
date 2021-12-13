@@ -6,7 +6,6 @@ class TransactionsController < ApplicationController
     only: %i[index]
 
   def index
-    # jbuilder view
     @params_hash = {
       statsUrl: stats_transactions_path,
       allTransactionsUrl: all_transactions_path,
@@ -15,7 +14,6 @@ class TransactionsController < ApplicationController
 
   def show
     transaction = Transaction.find(params[:id])
-    # jbuilder view
     @params_hash = {
       originalSum: transaction.original_sum,
       exchangedSum: BitcoinWallet::BtcFormatter.format(transaction.exchanged_sum),
@@ -29,7 +27,6 @@ class TransactionsController < ApplicationController
 
   def new
     bitcoin_wallet = BitcoinWallet.new
-    # camelize params? В геме был метод
     @params_hash = {
       networkFee: BitcoinWallet::NETWORK_FEE,
       exchangeFeePercent: BitcoinWallet::EXCHANGE_FEE_PERCENT,
@@ -49,7 +46,7 @@ class TransactionsController < ApplicationController
         render json: { errors: format_errors(errors) }, status: :unprocessable_entity
       end
 
-      result.failure do |error| # исключением?
+      result.failure do |error|
         render json: { errors: format_errors(general: error) }, status: :unprocessable_entity
       end
     end
@@ -70,12 +67,11 @@ class TransactionsController < ApplicationController
 
   private
 
-  def create_transaction # контейнер?
+  def create_transaction
     Transactions::Transaction::Create.new
   end
 
   def transaction_params
-    # нужно добавить передачу exchanged_sum и fee
     params.require(:transaction).permit(
       :email,
       :destination,
@@ -88,7 +84,6 @@ class TransactionsController < ApplicationController
     )
   end
 
-  # в декоратор?
   def format_errors(errors)
     errors.stringify_keys.transform_keys{ |key| key.camelize(:lower) }
   end

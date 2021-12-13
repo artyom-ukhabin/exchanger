@@ -24,8 +24,8 @@ module Operations
 
         params.merge!(network_fee: BitcoinWallet::NETWORK_FEE)
         broadcast_params = result[:success] ?
-          { status: result[:success], tx_id: result[:idx] } :
-          { status: result[:success], broadcast_error: result[:message] }
+          { success: result[:success], tx_id: result[:idx] } :
+          { success: result[:success], broadcast_error: result[:message] }
 
         Success(params.merge(broadcast_params))
       end
