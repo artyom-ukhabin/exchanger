@@ -8,6 +8,7 @@ gem 'dry-system'
 gem 'dry-transaction'
 gem 'dry-validation'
 gem 'jbuilder', '~> 2.7'
+gem "factory_bot_rails"
 gem 'pg', '~> 1.1'
 gem 'puma', '~> 5.0'
 gem 'rails', '~> 6.1.4', '>= 6.1.4.1'
@@ -21,8 +22,8 @@ gem 'bootsnap', '>= 1.4.4', require: false
 
 group :development, :test do
   gem "pry"
-  gem "pry-rails"
   gem "pry-byebug"
+  gem "pry-rails"
   gem 'rspec-rails'
 end
 
