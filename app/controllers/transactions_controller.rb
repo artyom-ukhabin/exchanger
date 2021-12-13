@@ -9,8 +9,17 @@ class TransactionsController < ApplicationController
   end
 
   def show
-    @transaction = Transaction.find(params[:id])
+    transaction = Transaction.find(params[:id])
     # jbuilder view
+    @params_hash = {
+      originalSum: transaction.original_sum,
+      exchangedSum: BitcoinWallet::BtcFormatter.format(transaction.exchanged_sum),
+      exchangeRate: transaction.exchange_rate,
+      destination: transaction.destination,
+      networkFee: BitcoinWallet::NETWORK_FEE,
+      exchangeFee: BitcoinWallet::BtcFormatter.format(transaction.exchange_fee),
+      txId: transaction.tx_id,
+    }
   end
 
   def new
@@ -36,7 +45,7 @@ class TransactionsController < ApplicationController
       end
 
       result.failure do |error| # исключением?
-        render json: { errors: format_errors(errors) }, status: :internal_server_error
+        render json: { errors: format_errors(general: error) }, status: :unprocessable_entity
       end
     end
   end
@@ -56,7 +65,7 @@ class TransactionsController < ApplicationController
       :original_sum,
       :exchanged_sum,
       :network_fee,
-      :exchanged_fee,
+      :exchange_fee,
       :terms_checked,
     )
   end

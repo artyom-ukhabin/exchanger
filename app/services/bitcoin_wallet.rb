@@ -15,13 +15,15 @@ class BitcoinWallet
     @wallet = @key_manager.load
   end
 
-  # log_wallet_status(@wallet)
-
-  def pay(addr_to, amount)
-    @sender.pay(@wallet, addr_to, amount)
+  def pay(addr_to, amount_sat, exchanged_fee_sat)
+    @sender.pay(@wallet, addr_to, amount_sat, exchanged_fee_sat)
   end
 
   def get_balance
     BtcFormatter.format(@stats.balance(@wallet.addr))
+  end
+
+  def btc_to_satoshi(btc_sum)
+    (btc_sum * BtcFormatter::BTC_DELIMITER).to_i
   end
 end

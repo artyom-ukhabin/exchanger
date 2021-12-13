@@ -7,6 +7,7 @@ module Operations
 
       def call(params)
         result = contract.call(params)
+        params.delete(:terms_checked)
         result.errors.any? ? Failure(result.errors.to_h) : Success(params)
       end
 

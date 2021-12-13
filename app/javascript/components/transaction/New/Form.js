@@ -33,7 +33,7 @@ class Form extends React.Component {
     errors: {},
     exchangedSum: 0,
     exchangeFee: 0,
-    rate: null,
+    exchangeRate: null,
   }
 
   componentDidMount() {
@@ -45,16 +45,16 @@ class Form extends React.Component {
     clearInterval(this.timer);
   }
 
-  rate = () => {
-    const { rate } = this.state
-    return(rate ? rate : <Spinner animation="border" size="sm"/>)
+  exchangeRate = () => {
+    const { exchangeRate } = this.state
+    return(exchangeRate ? exchangeRate : <Spinner animation="border" size="sm"/>)
   }
 
   // посмотреть все округления
   exchangedSum = () => {
-    const { inputs, rate } = this.state
+    const { inputs, exchangeRate } = this.state
     const { networkFee } = this.props
-    const sum = (inputs.originalSum / rate) - this.exchangeFee() - networkFee
+    const sum = (inputs.originalSum / exchangeRate) - this.exchangeFee() - networkFee
     return(sum > 0 ? sum : 0)
   }
 
@@ -63,9 +63,9 @@ class Form extends React.Component {
   // С экспонентой в раунде NaN на маленькой сумме?
   // Может скачать либу
   exchangeFee = () => {
-    const { inputs, rate } = this.state
+    const { inputs, exchangeRate } = this.state
     const { exchangeFeePercent } = this.props
-    return((inputs.originalSum / rate) * exchangeFeePercent)
+    return((inputs.originalSum / exchangeRate) * exchangeFeePercent)
   }
 
   btcRounded = (number) => {
@@ -84,11 +84,11 @@ class Form extends React.Component {
 
     fetch(exchangeRateApiUrl)
       .then(response => response.json())
-      .then(data => this.setState({ rate: data.USDT }));
+      .then(data => this.setState({ exchangeRate: data.USDT }));
   }
 
   onSubmit = event => {
-    const { inputs, exchangedSum, exchangedFee } = this.state
+    const { inputs, exchangeRate } = this.state
     const { createUrl } = this.props
 
     event.preventDefault()
@@ -97,8 +97,9 @@ class Form extends React.Component {
     const snakeizedInputs = _.mapKeys(inputs, (value, key) => (_.snakeCase(key)))
     const transactionParams = {
       ...snakeizedInputs,
-      exchanged_sum: exchangedSum,
-      exchanged_fee: exchangedFee,
+      exchanged_sum: this.exchangedSum(),
+      exchange_fee: this.exchangeFee(),
+      exchange_rate: exchangeRate,
     }
 
     const requestOptions = {
@@ -133,8 +134,6 @@ class Form extends React.Component {
 
   render () {
     const { inputs, errors } = this.state
-
-    console.log(errors)
 
     return (
       <React.Fragment>
@@ -214,7 +213,7 @@ class Form extends React.Component {
                 <ListGroup variant="flush">
                   <ListGroup.Item>
                     <span>Exchange rate: </span>
-                    <span>{this.rate()}</span>
+                    <span>{this.exchangeRate()}</span>
                   </ListGroup.Item>
                   <ListGroup.Item>
                     {`Exchanged Fee: ${this.btcRounded(this.exchangeFee())} BTC`}

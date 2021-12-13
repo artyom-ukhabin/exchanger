@@ -11,7 +11,7 @@ class CreateTransactions < ActiveRecord::Migration[6.1]
       t.bigint :original_sum, null: false
       t.bigint :exchanged_sum, null: false
       t.bigint :network_fee, null: false
-      t.bigint :exchanged_fee, null: false
+      t.bigint :exchange_fee, null: false
       t.string :tx_id, null: false
       t.boolean :status, null: false
       t.timestamp :created_at, null: false

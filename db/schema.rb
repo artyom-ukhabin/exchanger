@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 2021_12_08_121837) do
     t.bigint "original_sum", null: false
     t.bigint "exchanged_sum", null: false
     t.bigint "network_fee", null: false
-    t.bigint "exchanged_fee", null: false
+    t.bigint "exchange_fee", null: false
     t.string "tx_id", null: false
     t.boolean "status", null: false
     t.datetime "created_at", null: false

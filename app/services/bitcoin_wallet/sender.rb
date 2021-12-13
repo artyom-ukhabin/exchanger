@@ -10,11 +10,11 @@ class BitcoinWallet
       @client = Client.new
     end
 
-    def pay(wallet, addr_to, amount, exchange_fee)
+    def pay(wallet, addr_to, amount, exchanged_fee)
       utxo_data = @stats.confirmed_utxo(wallet.addr)
 
       balance = @stats.balance(wallet.addr)
-      fee = calculate_fee(exchange_fee)
+      fee = calculate_fee(exchanged_fee)
       unless able_to_pay?(balance, amount, fee)
         return { success: false, message: low_balance_message(balance, amount) }
       end
@@ -28,13 +28,14 @@ class BitcoinWallet
         fee: fee,
         )
       Rails.logger.debug(tx.payload.bth)
+      tx
       # push(tx)
     end
 
     private
 
-    def calculate_fee(exchange_fee)
-      exchange_fee + NETWORK_FEE
+    def calculate_fee(exchanged_fee)
+      exchanged_fee + NETWORK_FEE
     end
 
     def able_to_pay?(balance, amount, fee)

@@ -7,14 +7,15 @@ module Contracts
       required(:destination).filled(:string)
       required(:original_sum).filled(:float)
       required(:exchanged_sum).filled(:float)
-      required(:exchanged_fee).filled(:float)
+      required(:exchange_rate).filled(:float)
+      required(:exchange_fee).filled(:float)
       required(:terms_checked).filled(:bool)
     end
 
     # Описать в ридми?
     rule(:destination) do
       begin
-        Bitcoin::Protocol::Addr.new(destination)
+        Bitcoin::Protocol::Addr.new(value)
       rescue => ArgumentError
         key.failure('incorrect address')
       end
