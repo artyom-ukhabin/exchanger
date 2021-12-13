@@ -13,6 +13,9 @@
 - Create `main_config.yml` file from `main_config.example.yml` and fill it with your random login and password for accessing
 transaction index page 
 - `rails s` + `bin/webpack`/`bin/webpack-dev-server` -> `localhost:3000`
+  
+### Exchange form:
+![Alt text](Main_form_screenshot.png?raw=true)
 
 # Comments (rus)
 ## Dry-stack
